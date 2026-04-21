@@ -1,4 +1,8 @@
 from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+#from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 
 from .models import Product
@@ -22,3 +26,41 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
 
 product_detail_view = ProductDetailAPIView.as_view()
+
+
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+
+product_update_view = ProductUpdateAPIView.as_view()
+
+class ProductDestroyAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_destory(self, instance):
+        super().perform_destory(instance)
+            
+product_destroy_view = ProductDestroyAPIView.as_view()
+
+
+# @api_view(['GET', 'POST'])
+# def product_alt_view(request, *args, **kwargs):
+#    method = request.method
+
+#    if method == 'GET':
+#         pass
+#    if method == 'POST':
+#         serializers = ProductSerializer(data=request.data)
+#         if serializers.is_valid(raise_exception=True):
+#             print(serializers.data)
+#             # data = serializers.data
+#             return Response(serializers.data)
+#         return Response({"invalid": "not good data"}, status=400)

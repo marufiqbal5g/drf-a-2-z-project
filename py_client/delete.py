@@ -1,0 +1,19 @@
+import requests
+
+product_id = input('What product id you want to delete?\n')
+
+try:
+    product_id = int(product_id)
+except:
+    product_id = None
+    print(f'{product_id} is not a valid product id')
+
+if product_id:
+    endpoint = f'http://localhost:8000/api/products/{product_id}/delete/'
+
+    get_response = requests.delete(endpoint)
+
+    print(f'text only:{get_response.text}')
+    print(f'status code: {get_response.status_code}')
+    print(f'json: {get_response.status_code, get_response.status_code==204}')
+    print(get_response.status_code, get_response.status_code==204)
